@@ -52,7 +52,7 @@ function ChatBox() {
       description: `User: ${data.chat}`,
     });
 
-    form.reset();
+    form.reset({ chat: "" });
 
     const placeholderAiMessage: ChatMessage = {
       id: uuidv4(),
@@ -87,6 +87,14 @@ function ChatBox() {
                   placeholder="Tell us a little bit about yourself"
                   className="resize-none"
                   {...field}
+                  onKeyDown={(e) => {
+                    const isLargeScreen = window.innerWidth >= 640;
+
+                    if (isLargeScreen && e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      form.handleSubmit(onSubmit)();
+                    }
+                  }}
                 />
               </FormControl>
 
@@ -107,7 +115,7 @@ function ChatBox() {
           )}
         />
 
-        <div className="flex w-full justify-end p-4">
+        <div className="flex w-full justify-end px-4 py-3">
           <Button type="submit">
             Send <SendHorizontal />
           </Button>

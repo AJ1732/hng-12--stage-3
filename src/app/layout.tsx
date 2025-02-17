@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/toaster";
-import "./globals.css";
 import { Header, Sidebar } from "@/components/layout";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "GPT",
@@ -42,7 +42,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`grid grid-cols-[5rem_1fr] antialiased`}>
         <Sidebar />
-        <main className="min-h-dvh [&>*:nth-child(2)]:mt-20">
+        <main className="min-h-dvh [&>*:nth-child(2)]:mt-16">
           <Header />
           {children}
         </main>

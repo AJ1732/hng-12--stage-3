@@ -1,6 +1,6 @@
 const Header = () => {
   return (
-    <header className="px-6 border-b fixed w-full bg-background py-5">
+    <header className="fixed z-50 w-full border-b bg-background px-6 py-5">
       <div>Header</div>
     </header>
   );

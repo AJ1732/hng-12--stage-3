@@ -1,21 +1,34 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { ChatLoading, TextBubble } from "@/components/custom";
 import { useChat } from "@/provider/chat";
 
 const ChatHistory = () => {
   const { state } = useChat();
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  // SCROLL TO THE LASTEST MESSAGE
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [state.messages]);
 
   return (
-    <section className="space-y-4 p-4">
-      {state.messages.map((msg) => (
-        <TextBubble
-          key={msg.id}
-          direction={msg.sender === "user" ? "right" : "left"}
-        >
-          {msg.sender === "ai" && msg.loading ? <ChatLoading /> : msg.text}
-        </TextBubble>
-      ))}
+    <section className="full-width chats content-grid max-h-[calc(100svh-21.125rem)] overflow-y-auto">
+      <div className="space-y-4 p-4">
+        {state.messages.map((msg) => (
+          <TextBubble
+            key={msg.id}
+            direction={msg.sender === "user" ? "right" : "left"}
+          >
+            {msg.sender === "ai" && msg.loading ? <ChatLoading /> : msg.text}
+          </TextBubble>
+        ))}
+        {/* ANCHOR TO THE SCROLL EFFECT */}
+        <div ref={messagesEndRef} />
+      </div>
     </section>
   );
 };
