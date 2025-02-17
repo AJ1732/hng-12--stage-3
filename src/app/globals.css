@@ -142,4 +142,12 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  @media (max-width: 768px) {
+    .sidebar-custom-transition {
+      transition:
+        transform 500ms ease-in-out,
+        width 500ms ease-in-out 300ms;
+    }
+  }
 }
