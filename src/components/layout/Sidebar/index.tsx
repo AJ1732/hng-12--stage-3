@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import { useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/provider/sidebar";
 import { useIsMobile } from "@/hooks/use-ismobile";
@@ -15,6 +16,21 @@ const ITEMS = [
 const Sidebar = () => {
   const { isOpen, toggleSidebar } = useSidebar();
   const isMobile = useIsMobile();
+  const sidebarRef = useRef<HTMLDivElement>(null);
+
+  //  HANDLE FOCUS TRAP ON MOBILE SCREENS
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const sidebar = sidebarRef.current;
+    if (!sidebar) return;
+
+    if (!isOpen) {
+      sidebar.setAttribute("inert", "");
+    } else {
+      sidebar.removeAttribute("inert");
+    }
+  }, [isOpen, isMobile]);
 
   const SIDEBAR_VARIANTS = {
     open: {
@@ -39,10 +55,14 @@ const Sidebar = () => {
     <motion.aside
       className={cn(
         "z-40 h-svh min-w-20 space-y-8 border-r bg-white p-4 max-md:absolute md:z-50 md:space-y-4",
+        !isOpen && isMobile && "pointer-events-none",
       )}
       initial="closed"
       animate={isOpen ? "open" : "closed"}
       variants={SIDEBAR_VARIANTS}
+      role="navigation"
+      aria-label="Main navigation"
+      tabIndex={-1}
     >
       <header>
         <Button
@@ -50,6 +70,8 @@ const Sidebar = () => {
           variant={"default"}
           onClick={toggleSidebar}
           className="aspect-square min-w-12 shadow-sm"
+          aria-label={isOpen ? "Close sidebar" : "Open sidebar"}
+          aria-expanded={isOpen}
         >
           G
         </Button>
@@ -57,22 +79,13 @@ const Sidebar = () => {
 
       <menu
         className={cn(
-          "flex flex-col items-start justify-start gap-6 px-2",
+          "flex flex-col items-start justify-start gap-2 px-2",
           isOpen && "md:items-start",
         )}
+        role="menu"
       >
-        {/* {[1, 2, 3].map((item) => (
-          <li
-            key={item}
-            className={cn(
-              "flex aspect-square min-w-8 items-center justify-center rounded-md bg-zinc-100",
-            )}
-          >
-            {item}
-          </li>
-        ))} */}
         {ITEMS.map((item) => (
-          <li key={item.id}>
+          <li key={item.id} className="w-full">
             <SidebarItem icon={item.icon} label={item.label} />
           </li>
         ))}
