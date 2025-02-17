@@ -4,13 +4,26 @@ import { cn } from "@/lib/utils";
 interface TextBubbleProps {
   children: React.ReactNode;
   direction?: "left" | "right";
+  timestamp?: number;
 }
 
 const TextBubble: React.FC<TextBubbleProps> = ({
   children,
   direction = "right",
+  timestamp,
 }) => {
   const right = direction === "right";
+
+  const formatTime = (timestamp?: number) => {
+    if (!timestamp) return "";
+    
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString('en-US', { 
+      hour: 'numeric', 
+      minute: '2-digit',
+      hour12: true 
+    });
+  };
 
   return (
     <article
@@ -37,7 +50,7 @@ const TextBubble: React.FC<TextBubbleProps> = ({
             right && "text-accent/50",
           )}
         >
-          1:25{" "}
+          {formatTime(timestamp)}{" "}
           <span
             className={cn(
               "inline-block size-1.5 rounded-full bg-foreground-op",
