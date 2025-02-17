@@ -40,7 +40,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`grid grid-cols-[5rem_1fr] antialiased`}>
+      <body className={`grid md:grid-cols-[5rem_1fr] antialiased`}>
         <Sidebar />
         <main className="min-h-dvh [&>*:nth-child(2)]:mt-16">
           <Header />
