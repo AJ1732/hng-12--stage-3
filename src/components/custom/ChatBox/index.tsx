@@ -99,7 +99,7 @@ function ChatBox() {
               </FormControl>
 
               <AnimatePresence mode="wait">
-                {fieldState.error && (
+                {form.formState.isSubmitted && fieldState.error && (
                   <motion.div
                     key={fieldState.error.message}
                     initial={{ opacity: 0, height: 0 }}
@@ -107,7 +107,7 @@ function ChatBox() {
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <FormMessage className="px-6 pt-4" />
+                    <FormMessage className="px-6 pt-2" />
                   </motion.div>
                 )}
               </AnimatePresence>
