@@ -42,7 +42,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`grid grid-cols-[5rem_1fr] antialiased`}>
         <Sidebar />
-        <main className="min-h-dvh">
+        <main className="min-h-dvh [&>*:nth-child(2)]:mt-20">
           <Header />
           {children}
         </main>

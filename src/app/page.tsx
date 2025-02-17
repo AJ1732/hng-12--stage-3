@@ -1,26 +1,23 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
+import { ChatBox, TextBubble } from "@/components/custom";
 
 export default function Home() {
-  const { toast } = useToast();
-
   return (
-    <div className="content-grid space-y-8 py-8">
-      <h1>Hello, World!</h1>
+    <div className="content-grid min-h-[calc(100svh-5rem)] content-end space-y-8 py-8">
+      <section className="mt-auto flex flex-col space-y-4 rounded-3xl p-4">
+        <TextBubble direction="left">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. In voluptas
+          praesentium quidem temporibus corrupti harum, numquam debitis
+          molestiae voluptatem facere unde vel ullam.
+        </TextBubble>
 
-      <Button
-        onClick={() => {
-          toast({
-            title: "Scheduled: Catch up",
-            description: "Friday, February 10, 2023 at 5:57 PM",
-            variant: "destructive"
-          });
-        }}
-      >
-        Hello
-      </Button>
+        <TextBubble>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        </TextBubble>
+      </section>
+
+      <ChatBox />
     </div>
   );
 }
