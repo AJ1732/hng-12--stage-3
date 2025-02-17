@@ -9,17 +9,21 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        pjs: ["Plus Jakarta Sans", "serif"],
+      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         "foreground-op": "hsl(var(--foreground-op))",
+        "icon-fade": "hsl(var(--icon-fade))",
 
         /* Primary Colors */
         primary: {
           "100": "hsl(var(--primary-100))",
           "200": "hsl(var(--primary-200))",
           "300": "hsl(var(--primary-300))",
-          DEFAULT: "hsl(var(--primary))",
+          DEFAULT: "hsl(var(--primary-300))",
           foreground: "hsl(var(--primary-foreground))",
         },
         /* Accent Colors */
@@ -64,6 +68,10 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        custom:
+          "0px 12px 16px -4px rgba(16, 24, 40, 0.08), 0px 4px 6px -2px rgba(16, 24, 40, 0.03)",
       },
     },
   },

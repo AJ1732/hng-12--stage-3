@@ -1,10 +1,8 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
 
 @layer base {
   :root {
@@ -35,6 +33,8 @@ body {
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+
+    --icon-fade: 219 21% 62%; /* #94A3B8 */
 
     /* Primary Colors */
     --primary-100: 245 74% 64%; /* #6366F1 */
@@ -68,13 +68,29 @@ body {
     --chart-5: 340 75% 55%;
   } */
 }
+*::-webkit-scrollbar {
+  width: 30px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  @apply rounded-[100vw] bg-primary-200/50;
+
+  border: 10px white solid;
+  transition: all 200ms ease-in-out;
+}
+*::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary-200;
+  cursor: pointer;
+}
 
 @layer base {
   * {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background font-pjs text-foreground;
   }
 }
 
