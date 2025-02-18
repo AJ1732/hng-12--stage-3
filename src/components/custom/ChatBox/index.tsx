@@ -79,15 +79,15 @@ function ChatBox() {
   }, [tooLong, isDirty]);
 
   // TO TRIGGER TOAST TO SUMMARIZE
-  useEffect(() => {
-    if (errors.chat) {
-      toast({
-        title: "Validation Error",
-        description: errors.chat.message,
-        variant: "destructive",
-      });
-    }
-  }, [errors.chat]);
+  // useEffect(() => {
+  //   if (errors.chat) {
+  //     toast({
+  //       title: "Validation Error",
+  //       description: errors.chat.message,
+  //       variant: "destructive",
+  //     });
+  //   }
+  // }, [errors.chat]);
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const sourceLanguage = await detectLanguage(data.chat);

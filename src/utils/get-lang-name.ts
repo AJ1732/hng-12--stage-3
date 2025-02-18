@@ -14,5 +14,5 @@ export function getLanguageName(code: string): string {
     tr: "Turkish",
   };
 
-  return languageMap[code] ?? "Unknown Language";
+  return languageMap[code] ?? "Unknown";
 }
