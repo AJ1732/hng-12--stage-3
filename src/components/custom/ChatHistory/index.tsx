@@ -16,14 +16,14 @@ const ChatHistory = () => {
   }, [state.messages]);
 
   return (
-    <section className="full-width chats content-grid max-h-[calc(100svh-20rem)] overflow-y-auto">
-      <div className="space-y-4 p-8">
+    <section className="full-width chats content-grid max-h-[calc(100svh-22rem)] overflow-y-auto">
+      <div className="space-y-8 p-4 md:p-8">
         {state.messages.map((msg) => (
           <TextBubble
             key={msg.id}
             direction={msg.sender === "user" ? "right" : "left"}
             timestamp={msg.timestamp}
-            // user
+            detectedLanguage={msg.detectedLanguage}
           >
             {msg.sender === "ai" && msg.loading ? <ChatLoading /> : msg.text}
           </TextBubble>

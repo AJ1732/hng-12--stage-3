@@ -5,12 +5,14 @@ interface TextBubbleProps {
   children: React.ReactNode;
   direction?: "left" | "right";
   timestamp?: number;
+  detectedLanguage?: string;
 }
 
 const TextBubble: React.FC<TextBubbleProps> = ({
   children,
   direction = "right",
   timestamp,
+  detectedLanguage,
 }) => {
   const right = direction === "right";
 
@@ -60,14 +62,16 @@ const TextBubble: React.FC<TextBubbleProps> = ({
         </span>
       </p>
 
-      <p
-        className={cn(
-          "absolute top-full text-sm",
-          right ? "left-4" : "right-4",
-        )}
-      >
-        es
-      </p>
+      {detectedLanguage && (
+        <p
+          className={cn(
+            "absolute top-full mt-1 text-sm text-gray-500",
+            right ? "right-16" : "left-16",
+          )}
+        >
+          {detectedLanguage}
+        </p>
+      )}
     </article>
   );
 };

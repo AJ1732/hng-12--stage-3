@@ -143,6 +143,22 @@
     scrollbar-width: none;
   }
 
+  @keyframes gradientAnimation {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  .animate-gradient {
+    animation: gradientAnimation 2s ease infinite;
+    background-size: 200% 200%;
+  }
+
   @media (max-width: 768px) {
     .sidebar-custom-transition {
       transition:

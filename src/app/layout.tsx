@@ -53,15 +53,15 @@ export default function RootLayout({
           content={process.env.NEXT_PUBLIC_LANGUAGE_API_TRIAL_TOKEN}
         />
       </head>
-      <body
-        className={`grid antialiased md:grid-cols-[5rem_1fr] md:[&>*:nth-child(2)]:col-start-2`}
-      >
+      <body className={`antialiased`}>
         <SidebarProvider>
-          <Sidebar />
-          <main className="min-h-dvh [&>*:nth-child(2)]:mt-16">
-            <Header />
-            {children}
-          </main>
+          <div className="grid md:grid-cols-[5rem_1fr] md:[&>*:nth-child(2)]:col-start-2">
+            <Sidebar />
+            <main className="min-h-dvh [&>*:nth-child(2)]:mt-16">
+              <Header />
+              {children}
+            </main>
+          </div>
           <Toaster />
         </SidebarProvider>
       </body>

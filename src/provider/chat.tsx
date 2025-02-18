@@ -14,6 +14,7 @@ export interface ChatMessage {
   sender: "user" | "ai";
   timestamp: number;
   loading?: boolean;
+  detectedLanguage?: string;
 }
 
 interface ChatState {
@@ -22,7 +23,10 @@ interface ChatState {
 
 type ChatAction =
   | { type: "ADD_MESSAGE"; payload: ChatMessage }
-  | { type: "UPDATE_MESSAGE"; payload: { id: string; text: string } }
+  | {
+      type: "UPDATE_MESSAGE";
+      payload: { id: string; text: string; detectedLanguage?: string };
+    }
   | { type: "RESET_CHAT" };
 
 const initialState: ChatState = {
@@ -38,7 +42,12 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
         ...state,
         messages: state.messages.map((msg) =>
           msg.id === action.payload.id
-            ? { ...msg, text: action.payload.text, loading: false }
+            ? {
+                ...msg,
+                text: action.payload.text,
+                loading: false,
+                detectedLanguage: action.payload.detectedLanguage,
+              }
             : msg,
         ),
       };

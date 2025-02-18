@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
 import { SendHorizontal } from "lucide-react";
@@ -8,7 +8,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
 
-import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -27,47 +26,89 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { useChat, ChatMessage } from "@/provider/chat";
+import { useLanguageDetection } from "@/hooks/use-language-detection";
+import { useTranslation } from "@/hooks/use-translation";
+import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
 const FormSchema = z.object({
   chat: z
     .string()
     .min(2, { message: "Chat must be at least 2 characters." })
-    .max(160, { message: "Chat must not be longer than 160 characters." }),
+    .max(150, {
+      message:
+        "Chat must not be longer than 150 characters. Please Summarize ✨",
+    }),
   language: z.string().optional(),
 });
 
 const getAIResponse = async (userMessage: string): Promise<string> => {
   return new Promise((resolve) =>
-    setTimeout(() => resolve(`AI reply to: ${userMessage}`), 5000),
+    setTimeout(() => resolve(`${userMessage}`), 1000),
   );
 };
 
 function ChatBox() {
   const [summarize, setSummarize] = useState(false);
 
+  const { dispatch } = useChat();
+  const { detectLanguage, error: detectionError } = useLanguageDetection();
+  const { translateText, error: translationError } = useTranslation();
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: {
+      chat: "",
+      language: "en",
+    },
   });
 
-  const { dispatch } = useChat();
+  const {
+    watch,
+    formState: { errors, isDirty },
+  } = form;
+  const chatValue = watch("chat");
+  const tooLong = chatValue.length > 150;
+
+  // TO HIGHLIGHT THE SUMMARIZE BUTTON
+  useEffect(() => {
+    if (isDirty && tooLong) {
+      setSummarize(true);
+    }
+  }, [chatValue, isDirty]);
+
+  // TO TRIGGER TOAST TO SUMMARIZE
+  useEffect(() => {
+    if (errors.chat) {
+      toast({
+        title: "Validation Error",
+        description: errors.chat.message,
+        variant: "destructive",
+      });
+    }
+  }, [errors.chat]);
+
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data.language);
+    const sourceLanguage = await detectLanguage(data.chat);
+
     const userMessage: ChatMessage = {
       id: uuidv4(),
       text: data.chat,
       sender: "user",
       timestamp: Date.now(),
+      detectedLanguage: sourceLanguage || undefined,
     };
     dispatch({ type: "ADD_MESSAGE", payload: userMessage });
 
-    toast({
-      title: "Message Sent",
-      description: `User: ${data.chat}`,
+    // RESET THE FORM AFTER SUBMISSION
+    form.reset({
+      chat: "",
+      language: data.language,
     });
+    // SET SUMMARIZE TO FALSE
+    setSummarize(false);
 
-    form.reset({ chat: "" });
-
+    // PLACEHOLDER TEXT FOR CHAT LOADING IN TEX BUBBLE
     const placeholderAiMessage: ChatMessage = {
       id: uuidv4(),
       text: "",
@@ -77,12 +118,54 @@ function ChatBox() {
     };
     dispatch({ type: "ADD_MESSAGE", payload: placeholderAiMessage });
 
-    const aiReplyText = await getAIResponse(data.chat);
+    try {
+      // SOURCE LANGUAGE
+      if (!sourceLanguage) return;
 
-    dispatch({
-      type: "UPDATE_MESSAGE",
-      payload: { id: placeholderAiMessage.id, text: aiReplyText },
-    });
+      // AWAIT AI RESPONSE
+      const aiReplyText = await getAIResponse(data.chat);
+      // console.log(sourceLanguage);
+
+      // TRANSLATE THE AI RESPONSE if the selected language is valid and not the source text language
+      if (data.language && data.language !== sourceLanguage) {
+        const translatedText = await translateText(
+          aiReplyText,
+          sourceLanguage,
+          data.language,
+        );
+        // console.log(translatedText);
+
+        if (translatedText) {
+          dispatch({
+            type: "UPDATE_MESSAGE",
+            payload: {
+              id: placeholderAiMessage.id,
+              text: translatedText,
+              detectedLanguage: data.language,
+            },
+          });
+          return;
+        }
+      }
+
+      // IF NO TRANSLATION NEEDED...
+      dispatch({
+        type: "UPDATE_MESSAGE",
+        payload: {
+          id: placeholderAiMessage.id,
+          text: aiReplyText,
+          detectedLanguage: sourceLanguage,
+        },
+      });
+    } catch (error) {
+      console.error("Translation error:", error);
+      toast({
+        title: "Translation Error",
+        description:
+          translationError || detectionError || "Failed to translate message",
+        variant: "destructive",
+      });
+    }
   }
 
   return (
@@ -91,6 +174,7 @@ function ChatBox() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="w-full rounded-3xl border border-t-0 border-border bg-white shadow-custom"
       >
+        {/* CHAT BOX */}
         <FormField
           control={form.control}
           name="chat"
@@ -121,7 +205,7 @@ function ChatBox() {
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <FormMessage className="px-6 pt-2" />
+                    <FormMessage className="px-6 pt-3" />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -129,50 +213,54 @@ function ChatBox() {
           )}
         />
 
-        <div className="flex w-full justify-between px-4 py-3">
-          {/* <div className="flex gap-6"> */}
-            <Button
-              type="button"
-              onClick={() => setSummarize((prev) => !prev)}
-              className={cn(
-                "bg-gradient-to-r from-primary-100 via-primary-200 to-primary-300 font-bold transition-all duration-300",
-                summarize ? "text-white" : "bg-clip-text text-transparent",
-              )}
-            >
-              Summarize
-            </Button>
+        <div className="grid w-full grid-cols-2 items-center justify-between gap-4 px-4 py-3 md:flex">
+          {/* SUMMARIZE BUTTON */}
+          <Button
+            type="button"
+            disabled={!tooLong}
+            onClick={() => setSummarize(true)}
+            className={cn(
+              "w-fit justify-self-end bg-gradient-to-r from-purple-500 via-primary-100 to-primary-300 font-bold transition-all duration-300",
+              summarize ? "text-white" : "bg-clip-text text-transparent",
+              tooLong && "animate-gradient",
+            )}
+          >
+            Summarize ✨
+          </Button>
 
-            <FormField
-              control={form.control}
-              name="language"
-              render={({ field }) => (
-                <FormItem className="flex ml-auto pr-6 items-center justify-center gap-4 space-y-0">
-                  <FormLabel>Select</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="English (en)" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="en">English (en)</SelectItem>
-                      <SelectItem value="fr">French (fr)</SelectItem>
-                      <SelectItem value="es">Spanish (es)</SelectItem>
-                      <SelectItem value="pt">Portuguese (pt)</SelectItem>
-                      <SelectItem value="ru">Russian (ru)</SelectItem>
-                      <SelectItem value="tr">Turkish (tr)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          {/* </div> */}
+          {/* TRANSLATION LANGUAGE OPTIONS */}
+          <FormField
+            control={form.control}
+            name="language"
+            render={({ field }) => (
+              <FormItem className="flex items-center gap-2 space-y-0 max-md:col-start-1 max-md:row-start-1 md:ml-auto md:mr-6">
+                <FormLabel>Select</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  value={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="English (en)" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent side="top">
+                    <SelectItem value="en">English (en)</SelectItem>
+                    <SelectItem value="fr">French (fr)</SelectItem>
+                    <SelectItem value="es">Spanish (es)</SelectItem>
+                    <SelectItem value="pt">Portuguese (pt)</SelectItem>
+                    <SelectItem value="ru">Russian (ru)</SelectItem>
+                    <SelectItem value="tr">Turkish (tr)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-          <Button type="submit">
+          {/* SUBMIT */}
+          <Button type="submit" className="max-md:col-span-2">
             Translate <SendHorizontal />
           </Button>
         </div>
