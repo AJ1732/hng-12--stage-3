@@ -75,7 +75,7 @@ function ChatBox() {
     if (isDirty && tooLong) {
       setSummarize(true);
     }
-  }, [chatValue, isDirty]);
+  }, [tooLong, isDirty]);
 
   // TO TRIGGER TOAST TO SUMMARIZE
   useEffect(() => {
