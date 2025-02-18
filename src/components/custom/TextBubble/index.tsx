@@ -33,7 +33,7 @@ const TextBubble: React.FC<TextBubbleProps> = ({
       <p
         className={cn(
           "flex flex-col gap-1 rounded-2xl border bg-white p-3",
-          right && "border-accent bg-primary-200 pr-2 text-white",
+          right && "border-accent bg-primary-200 pr-3 text-white",
         )}
       >
         {children}
