@@ -27,7 +27,7 @@ const TextBubble: React.FC<TextBubbleProps> = ({
     >
       <Avatar>
         <AvatarImage src="https://github.com/shadcn.png" />
-        <AvatarFallback>SL</AvatarFallback>
+        <AvatarFallback>T</AvatarFallback>
       </Avatar>
 
       <p

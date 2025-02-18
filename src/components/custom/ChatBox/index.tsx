@@ -71,7 +71,7 @@ function ChatBox() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="w-full rounded-3xl border border-t-0 border-border bg-white shadow-custom"
       >
-        {/* CHAT BOX */}
+        {/* Chat Box */}
         <FormField
           control={form.control}
           name="chat"
@@ -113,7 +113,7 @@ function ChatBox() {
         />
 
         <div className="grid w-full grid-cols-2 items-center justify-between gap-4 px-4 py-3 md:flex">
-          {/* SUMMARIZE BUTTON */}
+          {/* Summarize button */}
           <Button
             type="button"
             disabled={isSubmitting || !tooLong}
@@ -123,16 +123,13 @@ function ChatBox() {
             }}
             className={cn(
               "w-fit justify-self-end bg-gradient-to-r from-purple-500 via-primary-100 to-primary-300 font-bold transition-all duration-300 max-md:col-start-2 max-md:row-start-1",
-              actionRef.current === "summarize"
-                ? "text-white"
-                : "bg-clip-text text-transparent",
-              tooLong && "animate-gradient",
+              tooLong ? "animate-gradient" : "bg-clip-text text-transparent",
             )}
           >
             Summarize ✨
           </Button>
 
-          {/* TRANSLATION LANGUAGE OPTIONS */}
+          {/* Translation language options */}
           <FormField
             control={form.control}
             name="language"
@@ -163,7 +160,7 @@ function ChatBox() {
             )}
           />
 
-          {/* TRANSLATE BUTTON */}
+          {/* Translate button */}
           <Button
             type="submit"
             disabled={isSubmitting}
