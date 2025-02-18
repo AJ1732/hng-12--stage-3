@@ -34,7 +34,7 @@ const Header = () => {
         G
       </Button>
 
-      <div>Header</div>
+      <div>AI-Powered Text Processing Interface</div>
     </header>
   );
 };

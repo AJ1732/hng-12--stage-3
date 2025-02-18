@@ -7,16 +7,7 @@ import React, {
   ReactNode,
   Dispatch,
 } from "react";
-
-// DEFINE CHAT MESSEGAE INTERFACE
-export interface ChatMessage {
-  id: string;
-  text: string;
-  sender: "user" | "ai";
-  timestamp: number;
-  loading?: boolean;
-  detectedLanguage?: string;
-}
+import { ChatMessage } from "@/types/chat";
 
 interface ChatState {
   messages: ChatMessage[];

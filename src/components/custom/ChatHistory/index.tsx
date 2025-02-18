@@ -8,7 +8,7 @@ const ChatHistory = () => {
   const { state } = useChat();
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  // SCROLL TO THE LASTEST MESSAGE
+  // Scroll to the lastest message
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -28,7 +28,7 @@ const ChatHistory = () => {
             {msg.sender === "ai" && msg.loading ? <ChatLoading /> : msg.text}
           </TextBubble>
         ))}
-        {/* ANCHOR TO THE SCROLL EFFECT */}
+        {/* Anchor to Scroll effect */}
         <div ref={messagesEndRef} />
       </div>
     </section>

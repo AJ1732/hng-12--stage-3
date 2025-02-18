@@ -37,6 +37,8 @@ const TextBubble: React.FC<TextBubbleProps> = ({
         )}
       >
         {children}
+
+        {/* Chat Timestamp */}
         <span
           className={cn(
             "ml-auto flex items-center gap-2 pr-1.5 text-xs font-medium text-foreground-op",
@@ -53,6 +55,7 @@ const TextBubble: React.FC<TextBubbleProps> = ({
         </span>
       </p>
 
+      {/* Display the detected language */}
       {detectedLanguage && (
         <p
           className={cn(

@@ -1,4 +1,4 @@
-// Define the interface for the detector and translator based on the API documentation.
+// Define the interface for the detector, translator and summarizer based on the API documentation.
 interface Detector {
   detect: (
     text: string,
@@ -7,6 +7,15 @@ interface Detector {
 
 interface Translator {
   translate: (text: string) => Promise<string>;
+}
+
+interface Summarizer {
+  summarize: (text: string, options?: { context?: string }) => Promise<string>;
+  addEventListener: (
+    type: "downloadprogress",
+    listener: (e: { loaded: number; total: number }) => void,
+  ) => void;
+  ready?: Promise<void>;
 }
 
 // DEFINE TranslationAPI INTERFACE IF NEEDED
@@ -35,6 +44,18 @@ interface AITranslator {
     }) => Promise<Translator>;
   };
   languageDetector?: AILanguageDetector;
+  summarizer?: AISummarizer;
+}
+
+// INTERFACE FOR SUMMARIZER
+interface AISummarizer {
+  capabilities: () => Promise<{ available: string }>;
+  create: (options: {
+    sharedContext: string;
+    type: string;
+    format: string;
+    length: string;
+  }) => Promise<Summarizer>;
 }
 
 // INLCUDE AI PROPERTY IN GLOBAL WINDOW INTERFACE

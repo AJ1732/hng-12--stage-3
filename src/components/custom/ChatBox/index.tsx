@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { AnimatePresence, motion } from "framer-motion";
+import { useRef } from "react";
+import { v4 as uuidv4 } from "uuid";
 import { SendHorizontal } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { v4 as uuidv4 } from "uuid";
 
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -25,150 +25,43 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { useChat, ChatMessage } from "@/provider/chat";
-import { useLanguageDetection } from "@/hooks/use-language-detection";
-import { useTranslation } from "@/hooks/use-translation";
-import { toast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+
+import { useTranslateFlow } from "@/hooks/use-translation-flow";
+import { useSummarizeFlow } from "@/hooks/use-summarizer-flow";
+
+import { type FormData, FormSchema } from "@/schema/chatbox";
 import { languages } from "@/constants/lang";
 import { cn } from "@/lib/utils";
 
-const FormSchema = z.object({
-  chat: z
-    .string()
-    .min(2, { message: "Chat must be at least 2 characters." })
-    .max(150, {
-      message:
-        "Chat must not be longer than 150 characters. Please Summarize ✨",
-    }),
-  language: z.string().optional(),
-});
-
-const getAIResponse = async (userMessage: string): Promise<string> => {
-  return new Promise((resolve) =>
-    setTimeout(() => resolve(`${userMessage}`), 1000),
-  );
-};
-
 function ChatBox() {
-  const [summarize, setSummarize] = useState(false);
+  // To hold the desired action ("translate" or "summarize")
+  const actionRef = useRef<"translate" | "summarize">("translate");
 
-  const { dispatch } = useChat();
-  const { detectLanguage, error: detectionError } = useLanguageDetection();
-  const { translateText, error: translationError } = useTranslation();
+  const { handleTranslateFlow } = useTranslateFlow();
+  const { handleSummarizeFlow } = useSummarizeFlow();
 
-  const form = useForm<z.infer<typeof FormSchema>>({
+  const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {
-      chat: "",
-      language: "en",
-    },
+    defaultValues: { chat: "", language: "en" },
   });
-
   const {
     watch,
-    formState: {
-      // errors,
-      isDirty,
-    },
+    formState: { isSubmitting },
   } = form;
   const chatValue = watch("chat");
   const tooLong = chatValue.length > 150;
 
-  // TO HIGHLIGHT THE SUMMARIZE BUTTON
-  useEffect(() => {
-    if (isDirty && tooLong) {
-      setSummarize(true);
-    }
-  }, [tooLong, isDirty]);
-
-  // TO TRIGGER TOAST TO SUMMARIZE
-  // useEffect(() => {
-  //   if (errors.chat) {
-  //     toast({
-  //       title: "Validation Error",
-  //       description: errors.chat.message,
-  //       variant: "destructive",
-  //     });
-  //   }
-  // }, [errors.chat]);
-
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    const sourceLanguage = await detectLanguage(data.chat);
+    // Reset the form.
+    form.reset({ chat: "", language: data.language });
 
-    const userMessage: ChatMessage = {
-      id: uuidv4(),
-      text: data.chat,
-      sender: "user",
-      timestamp: Date.now(),
-      detectedLanguage: sourceLanguage || undefined,
-    };
-    dispatch({ type: "ADD_MESSAGE", payload: userMessage });
-
-    // RESET THE FORM AFTER SUBMISSION
-    form.reset({
-      chat: "",
-      language: data.language,
-    });
-    // SET SUMMARIZE TO FALSE
-    setSummarize(false);
-
-    // PLACEHOLDER TEXT FOR CHAT LOADING IN TEX BUBBLE
-    const placeholderAiMessage: ChatMessage = {
-      id: uuidv4(),
-      text: "",
-      sender: "ai",
-      timestamp: Date.now(),
-      loading: true,
-    };
-    dispatch({ type: "ADD_MESSAGE", payload: placeholderAiMessage });
-
-    try {
-      // SOURCE LANGUAGE
-      if (!sourceLanguage) return;
-
-      // AWAIT AI RESPONSE
-      const aiReplyText = await getAIResponse(data.chat);
-      // console.log(sourceLanguage);
-
-      // TRANSLATE THE AI RESPONSE if the selected language is valid and not the source text language
-      if (data.language && data.language !== sourceLanguage) {
-        const translatedText = await translateText(
-          aiReplyText,
-          sourceLanguage,
-          data.language,
-        );
-        // console.log(translatedText);
-
-        if (translatedText) {
-          dispatch({
-            type: "UPDATE_MESSAGE",
-            payload: {
-              id: placeholderAiMessage.id,
-              text: translatedText,
-              detectedLanguage: data.language,
-            },
-          });
-          return;
-        }
-      }
-
-      // IF NO TRANSLATION NEEDED...
-      dispatch({
-        type: "UPDATE_MESSAGE",
-        payload: {
-          id: placeholderAiMessage.id,
-          text: aiReplyText,
-          detectedLanguage: sourceLanguage,
-        },
-      });
-    } catch (error) {
-      console.error("Translation error:", error);
-      toast({
-        title: "Translation Error",
-        description:
-          translationError || detectionError || "Failed to translate message",
-        variant: "destructive",
-      });
+    if (actionRef.current === "translate") {
+      // TRANSLATION FLOW:
+      await handleTranslateFlow(data);
+    } else if (actionRef.current === "summarize") {
+      // SUMMARIZATION FLOW:
+      await handleSummarizeFlow(data);
     }
   }
 
@@ -190,9 +83,11 @@ function ChatBox() {
                   className="resize-none"
                   {...field}
                   onKeyDown={(e) => {
-                    const isLargeScreen = window.innerWidth >= 640;
-
-                    if (isLargeScreen && e.key === "Enter" && !e.shiftKey) {
+                    if (
+                      window.innerWidth >= 640 &&
+                      e.key === "Enter" &&
+                      !e.shiftKey
+                    ) {
                       e.preventDefault();
                       form.handleSubmit(onSubmit)();
                     }
@@ -200,7 +95,6 @@ function ChatBox() {
                 />
               </FormControl>
 
-              {/* ANIMATE ERROR MESSAGE */}
               <AnimatePresence mode="wait">
                 {form.formState.isSubmitted && fieldState.error && (
                   <motion.div
@@ -222,11 +116,16 @@ function ChatBox() {
           {/* SUMMARIZE BUTTON */}
           <Button
             type="button"
-            disabled={!tooLong}
-            onClick={() => setSummarize(true)}
+            disabled={isSubmitting || !tooLong}
+            onClick={() => {
+              actionRef.current = "summarize";
+              form.handleSubmit(onSubmit)();
+            }}
             className={cn(
-              "w-fit justify-self-end bg-gradient-to-r from-purple-500 via-primary-100 to-primary-300 font-bold transition-all duration-300",
-              summarize ? "text-white" : "bg-clip-text text-transparent",
+              "w-fit justify-self-end bg-gradient-to-r from-purple-500 via-primary-100 to-primary-300 font-bold transition-all duration-300 max-md:col-start-2 max-md:row-start-1",
+              actionRef.current === "summarize"
+                ? "text-white"
+                : "bg-clip-text text-transparent",
               tooLong && "animate-gradient",
             )}
           >
@@ -238,12 +137,13 @@ function ChatBox() {
             control={form.control}
             name="language"
             render={({ field }) => (
-              <FormItem className="flex items-center gap-2 space-y-0 max-md:col-start-1 max-md:row-start-1 md:ml-auto md:mr-6">
+              <FormItem className="flex items-center gap-2 space-y-0 md:ml-auto md:mr-6">
                 <FormLabel>Select</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                   value={field.value}
+                  disabled={isSubmitting}
                 >
                   <FormControl>
                     <SelectTrigger className="w-[180px]">
@@ -263,9 +163,17 @@ function ChatBox() {
             )}
           />
 
-          {/* SUBMIT */}
-          <Button type="submit" className="max-md:col-span-2">
-            Translate <SendHorizontal />
+          {/* TRANSLATE BUTTON */}
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="max-md:col-span-2"
+            onClick={() => {
+              actionRef.current = "translate";
+            }}
+          >
+            Translate
+            <SendHorizontal />
           </Button>
         </div>
       </form>
