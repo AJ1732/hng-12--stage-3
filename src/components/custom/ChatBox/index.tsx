@@ -120,7 +120,7 @@ function ChatBox() {
             <FormItem className="space-y-0">
               <FormControl>
                 <Textarea
-                  placeholder="Tell us a little bit about yourself"
+                  placeholder="What do you want to do?"
                   className="resize-none"
                   {...field}
                   onKeyDown={(e) => {
