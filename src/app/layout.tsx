@@ -52,6 +52,11 @@ export default function RootLayout({
           httpEquiv="origin-trial"
           content={process.env.NEXT_PUBLIC_LANGUAGE_API_TRIAL_TOKEN}
         />
+        <meta
+          name="summarizer-api-trial-token"
+          httpEquiv="origin-trial"
+          content={process.env.NEXT_PUBLIC_SUMMARIZER_API_TRIAL_TOKEN}
+        />
       </head>
       <body className={`antialiased`}>
         <SidebarProvider>
