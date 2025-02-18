@@ -23,6 +23,7 @@ const ChatHistory = () => {
             key={msg.id}
             direction={msg.sender === "user" ? "right" : "left"}
             timestamp={msg.timestamp}
+            // user
           >
             {msg.sender === "ai" && msg.loading ? <ChatLoading /> : msg.text}
           </TextBubble>

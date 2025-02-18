@@ -41,6 +41,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta
+          name="translator-api-trial-token"
+          httpEquiv="origin-trial"
+          content={process.env.NEXT_PUBLIC_TRANSLATOR_API_TRIAL_TOKEN}
+        />
+        <meta
+          name="language-api-trial-token"
+          httpEquiv="origin-trial"
+          content={process.env.NEXT_PUBLIC_LANGUAGE_API_TRIAL_TOKEN}
+        />
+      </head>
       <body
         className={`grid antialiased md:grid-cols-[5rem_1fr] md:[&>*:nth-child(2)]:col-start-2`}
       >

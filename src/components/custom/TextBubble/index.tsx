@@ -16,19 +16,19 @@ const TextBubble: React.FC<TextBubbleProps> = ({
 
   const formatTime = (timestamp?: number) => {
     if (!timestamp) return "";
-    
+
     const date = new Date(timestamp);
-    return date.toLocaleTimeString('en-US', { 
-      hour: 'numeric', 
-      minute: '2-digit',
-      hour12: true 
+    return date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
     });
   };
 
   return (
     <article
       className={cn(
-        "flex max-w-[33.5rem] items-start justify-start gap-4",
+        "relative flex w-fit max-w-[33.5rem] items-start justify-start gap-4",
         right && "ml-auto flex-row-reverse",
       )}
     >
@@ -58,6 +58,15 @@ const TextBubble: React.FC<TextBubbleProps> = ({
             )}
           ></span>
         </span>
+      </p>
+
+      <p
+        className={cn(
+          "absolute top-full text-sm",
+          right ? "left-4" : "right-4",
+        )}
+      >
+        es
       </p>
     </article>
   );
