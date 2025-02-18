@@ -9,10 +9,10 @@ import { useState } from "react";
  * @returns { detectLanguage, detectedLanguage, error, loading }
  */
 
-interface DownloadProgressEvent extends Event {
-  loaded: number;
-  total: number;
-}
+// interface DownloadProgressEvent extends Event {
+//   loaded: number;
+//   total: number;
+// }
 
 export function useLanguageDetection() {
   const [detectedLanguage, setDetectedLanguage] = useState<string>("");
