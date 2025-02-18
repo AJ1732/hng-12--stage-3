@@ -1,24 +1,25 @@
 "use client";
-import { motion } from "framer-motion";
 import { useRef, useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/provider/sidebar";
 import { useIsMobile } from "@/hooks/use-ismobile";
 import { cn } from "@/lib/utils";
-import { SidebarItem } from "./components";
+// import { SidebarItem } from "./components";
 
-const ITEMS = [
-  { id: 1, label: "Dashboard", icon: "D" },
-  { id: 2, label: "Settings", icon: "S" },
-  { id: 3, label: "Profile", icon: "P" },
-];
+// const ITEMS = [
+//   { id: 1, label: "Dashboard", icon: "D" },
+//   { id: 2, label: "Settings", icon: "S" },
+//   { id: 3, label: "Profile", icon: "P" },
+// ];
 
 const Sidebar = () => {
   const { isOpen, toggleSidebar } = useSidebar();
   const isMobile = useIsMobile();
   const sidebarRef = useRef<HTMLDivElement>(null);
 
-  //  HANDLE FOCUS TRAP ON MOBILE SCREENS
+  // Handle focus trap on mobile screens
   useEffect(() => {
     if (!isMobile) return;
 
@@ -73,7 +74,7 @@ const Sidebar = () => {
           aria-label={isOpen ? "Close sidebar" : "Open sidebar"}
           aria-expanded={isOpen}
         >
-          G
+          T
         </Button>
       </header>
 
@@ -84,11 +85,31 @@ const Sidebar = () => {
         )}
         role="menu"
       >
-        {ITEMS.map((item) => (
+        {/* {ITEMS.map((item) => (
           <li key={item.id} className="w-full">
             <SidebarItem icon={item.icon} label={item.label} />
           </li>
-        ))}
+        ))} */}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.li
+              initial={{ opacity: 0, width: 0 }}
+              animate={{
+                opacity: 1,
+                width: "auto",
+                transition: { duration: 0.3, delay: 0.5 },
+              }}
+              exit={{
+                opacity: 0,
+                width: 0,
+                transition: { duration: 0.3 },
+              }}
+              className={cn("overflow-hidden whitespace-nowrap")}
+            >
+              Chat history coming soon...
+            </motion.li>
+          )}
+        </AnimatePresence>
       </menu>
     </motion.aside>
   );
