@@ -1,14 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { useLanguageDetection } from "@/hooks/use-language-detection"; // Adjust path as needed
-import { useTranslation } from "@/hooks/use-translation"; // Adjust path as needed
+import { useLanguageDetection } from "@/hooks/use-language-detection"; 
+import { useTranslation } from "@/hooks/use-translation"; 
 
 const TranslatorForm = () => {
   const [inputText, setInputText] = useState("");
   const [targetLanguage, setTargetLanguage] = useState("fr");
 
-  // Use our custom hooks.
   const {
     detectLanguage,
     detectedLanguage,
@@ -23,17 +22,13 @@ const TranslatorForm = () => {
     loading: translationLoading,
   } = useTranslation();
 
-  // Handle the translate button click.
   const handleTranslate = async () => {
-    // First, detect the language of the input text.
     const sourceLanguage = await detectLanguage(inputText);
     if (!sourceLanguage) return;
 
-    // Then, translate the text from the detected language to the target language.
     await translateText(inputText, sourceLanguage, targetLanguage);
   };
 
-  // Combine loading and error states.
   const overallLoading = detectionLoading || translationLoading;
   const overallError = detectionError || translationError;
 

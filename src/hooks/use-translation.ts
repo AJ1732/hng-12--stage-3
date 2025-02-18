@@ -24,14 +24,14 @@ export function useTranslation() {
   async function translateText(
     text: string,
     sourceLanguage: string,
-    targetLanguage: string
+    targetLanguage: string,
   ): Promise<string | void> {
     setError("");
     setTranslatedText("");
     setLoading(true);
 
     try {
-      // Check if the translator API is available.
+      // IS TRANSLATOR API AVAILABLE
       if (
         !self.ai ||
         !self.ai.translator ||
@@ -40,14 +40,14 @@ export function useTranslation() {
         throw new Error("Translation API is not supported in this browser.");
       }
 
-      // If source and target languages are the same, no translation is needed.
+      // IS SOURCE AND TARGET TEXT ARE THE SAME
       if (sourceLanguage === targetLanguage) {
         setTranslatedText(text);
         setLoading(false);
         return text;
       }
 
-      // Create the translator and perform the translation.
+      // CREATE TRANSLATOR AND PERFORM TRANSLATION
       const translator = await self.ai.translator.create({
         sourceLanguage,
         targetLanguage,

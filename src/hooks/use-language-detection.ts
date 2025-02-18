@@ -19,22 +19,25 @@ export function useLanguageDetection() {
    * @param text - The text to analyze.
    * @returns The detected language code or void on error.
    */
+
   async function detectLanguage(text: string): Promise<string | void> {
     setError("");
     setDetectedLanguage("");
     setLoading(true);
 
     try {
-      // Check if the language detector API is available.
+      // IS LANGUAGE DETECTOR API AVAILABLE
       if (
         !self.ai ||
         !self.ai.languageDetector ||
         typeof self.ai.languageDetector.capabilities !== "function"
       ) {
-        throw new Error("Language Detector API is not supported in this browser.");
+        throw new Error(
+          "Language Detector API is not supported in this browser.",
+        );
       }
 
-      // Get detector capabilities.
+      // GET DETECTOR CAPABILITIES
       const capabilities = await self.ai.languageDetector.capabilities();
       const canDetect = capabilities.capabilities;
       let detector;
@@ -44,20 +47,21 @@ export function useLanguageDetection() {
       if (canDetect === "readily") {
         detector = await self.ai.languageDetector.create();
       } else {
-        // If the detector requires a model download, you can optionally monitor the progress.
+        // OPTIMALLY MONITOR MODEL DOWNLOAD, IF IT NEEDED
         detector = await self.ai.languageDetector.create({
           monitor(m) {
             m.addEventListener("downloadprogress", (e) => {
-              // Optionally cast e to a custom type for loaded/total.
               const progressEvent = e as any;
-              console.log(`Downloaded ${progressEvent.loaded} of ${progressEvent.total} bytes.`);
+              console.log(
+                `Downloaded ${progressEvent.loaded} of ${progressEvent.total} bytes.`,
+              );
             });
           },
         });
         await detector.ready;
       }
 
-      // Detect the language of the text.
+      // DETECT LANGUAGE OF THE TEXT
       const results = await detector.detect(text.trim());
       if (!results || results.length === 0) {
         throw new Error("Could not detect the language of the input text.");
