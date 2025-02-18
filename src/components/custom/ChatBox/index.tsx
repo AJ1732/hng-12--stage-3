@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { useEffect, useRef, useState } from "react";
 import { SendHorizontal } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -33,6 +32,8 @@ import { useSummarizeFlow } from "@/hooks/use-summarizer-flow";
 import { type FormData, FormSchema } from "@/schema/chatbox";
 import { languages } from "@/constants/lang";
 import { cn } from "@/lib/utils";
+import { useLanguageDetection } from "@/hooks/use-language-detection";
+import { toast } from "@/hooks/use-toast";
 
 function ChatBox() {
   // To hold the desired action ("translate" or "summarize")
@@ -45,12 +46,52 @@ function ChatBox() {
     resolver: zodResolver(FormSchema),
     defaultValues: { chat: "", language: "en" },
   });
+
   const {
     watch,
-    formState: { isSubmitting },
+    formState: { isDirty, isSubmitting },
   } = form;
+
+  const [detectedLanguage, setDetectedLanguage] = useState<string>("");
+  const { detectLanguage } = useLanguageDetection();
+
   const chatValue = watch("chat");
   const tooLong = chatValue.length > 150;
+
+  // Watch chat value and detect language
+  useEffect(() => {
+    const detectChatLanguage = async () => {
+      if (chatValue.trim().length > 0) {
+        try {
+          const detected = await detectLanguage(chatValue);
+          setDetectedLanguage(detected || "");
+        } catch (error) {
+          const errorMessage =
+            error instanceof Error
+              ? error.message
+              : "An unexpected error occurred";
+
+          toast({
+            title: "Language detection failed",
+            description: errorMessage,
+            variant: "destructive",
+          });
+          setDetectedLanguage("");
+        }
+      } else {
+        setDetectedLanguage("");
+      }
+    };
+
+    // Debounce the detection to avoid too many API calls
+    const timer = setTimeout(() => {
+      detectChatLanguage();
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [chatValue, detectLanguage]);
+
+  const notEnglish = detectedLanguage !== "en";
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     // Reset the form.
@@ -112,29 +153,37 @@ function ChatBox() {
           )}
         />
 
-        <div className="grid w-full grid-cols-2 items-center justify-between gap-4 px-4 py-3 md:flex">
+        <div className="flex w-full items-start justify-between gap-4 px-4 py-3 max-md:flex-col">
           {/* Summarize button */}
-          <Button
-            type="button"
-            disabled={isSubmitting || !tooLong}
-            onClick={() => {
-              actionRef.current = "summarize";
-              form.handleSubmit(onSubmit)();
-            }}
-            className={cn(
-              "w-fit justify-self-end bg-gradient-to-r from-purple-500 via-primary-100 to-primary-300 font-bold transition-all duration-300 max-md:col-start-2 max-md:row-start-1",
-              tooLong ? "animate-gradient" : "bg-clip-text text-transparent",
+          <div className="flex w-full flex-col justify-end">
+            <Button
+              type="button"
+              disabled={isSubmitting || !tooLong || notEnglish}
+              onClick={() => {
+                actionRef.current = "summarize";
+                form.handleSubmit(onSubmit)();
+              }}
+              className={cn(
+                "w-full bg-gradient-to-r from-purple-500 via-primary-100 to-primary-300 font-bold transition-all duration-300 md:w-fit",
+                tooLong ? "animate-gradient" : "bg-clip-text text-transparent",
+              )}
+            >
+              Summarize ✨
+            </Button>
+
+            {notEnglish && isDirty && (
+              <FormMessage className="h-fit px-2 pt-3 max-md:col-span-2 max-md:text-center">
+                To Summarize, text must be in English
+              </FormMessage>
             )}
-          >
-            Summarize ✨
-          </Button>
+          </div>
 
           {/* Translation language options */}
           <FormField
             control={form.control}
             name="language"
             render={({ field }) => (
-              <FormItem className="flex items-center gap-2 space-y-0 md:ml-auto md:mr-6">
+              <FormItem className="flex items-center gap-2 space-y-0 max-md:w-full md:ml-auto">
                 <FormLabel>Select</FormLabel>
                 <Select
                   onValueChange={field.onChange}
@@ -143,7 +192,7 @@ function ChatBox() {
                   disabled={isSubmitting}
                 >
                   <FormControl>
-                    <SelectTrigger className="w-[180px]">
+                    <SelectTrigger className="md:w-[180px]">
                       <SelectValue placeholder="English (en)" />
                     </SelectTrigger>
                   </FormControl>
@@ -164,7 +213,7 @@ function ChatBox() {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="max-md:col-span-2"
+            className="max-md:w-full"
             onClick={() => {
               actionRef.current = "translate";
             }}
