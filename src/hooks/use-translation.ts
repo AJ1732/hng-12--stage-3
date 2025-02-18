@@ -56,9 +56,14 @@ export function useTranslation() {
       setTranslatedText(result);
       setLoading(false);
       return result;
-    } catch (err: any) {
-      console.error("Translation error:", err);
-      setError(err.message || "An error occurred during translation.");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error("Language detection error:", err);
+        setError(err.message || "An error occurred during language detection.");
+      } else {
+        console.error("Language detection error:", err);
+        setError("An unknown error occurred during language detection.");
+      }
       setLoading(false);
     }
   }

@@ -1,4 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getLanguageName } from "@/utils/get-lang-name";
+import { formatTime } from "@/utils/format-time";
 import { cn } from "@/lib/utils";
 
 interface TextBubbleProps {
@@ -16,17 +18,6 @@ const TextBubble: React.FC<TextBubbleProps> = ({
 }) => {
   const right = direction === "right";
 
-  const formatTime = (timestamp?: number) => {
-    if (!timestamp) return "";
-
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
-
   return (
     <article
       className={cn(
@@ -42,13 +33,13 @@ const TextBubble: React.FC<TextBubbleProps> = ({
       <p
         className={cn(
           "flex flex-col gap-1 rounded-2xl border bg-white p-3",
-          right && "border-accent bg-primary-200 pr-3.5 text-white",
+          right && "border-accent bg-primary-200 pr-2 text-white",
         )}
       >
         {children}
         <span
           className={cn(
-            "ml-auto flex items-center gap-2 pr-2 text-xs font-medium text-foreground-op",
+            "ml-auto flex items-center gap-2 pr-1.5 text-xs font-medium text-foreground-op",
             right && "text-accent/50",
           )}
         >
@@ -65,11 +56,11 @@ const TextBubble: React.FC<TextBubbleProps> = ({
       {detectedLanguage && (
         <p
           className={cn(
-            "absolute top-full mt-1 text-sm text-gray-500",
+            "absolute top-full mt-1 text-sm lowercase text-gray-500",
             right ? "right-16" : "left-16",
           )}
         >
-          {detectedLanguage}
+          {getLanguageName(detectedLanguage)}
         </p>
       )}
     </article>

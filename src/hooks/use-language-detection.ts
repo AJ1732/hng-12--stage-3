@@ -8,6 +8,12 @@ import { useState } from "react";
  *
  * @returns { detectLanguage, detectedLanguage, error, loading }
  */
+
+interface DownloadProgressEvent extends Event {
+  loaded: number;
+  total: number;
+}
+
 export function useLanguageDetection() {
   const [detectedLanguage, setDetectedLanguage] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -48,16 +54,20 @@ export function useLanguageDetection() {
         detector = await self.ai.languageDetector.create();
       } else {
         // OPTIMALLY MONITOR MODEL DOWNLOAD, IF IT NEEDED
-        detector = await self.ai.languageDetector.create({
-          monitor(m) {
-            m.addEventListener("downloadprogress", (e) => {
-              const progressEvent = e as any;
-              console.log(
-                `Downloaded ${progressEvent.loaded} of ${progressEvent.total} bytes.`,
-              );
-            });
-          },
-        });
+        detector = await self.ai.languageDetector
+          .create
+          // INSERT OBJECT INSIDE CREATE FUNCTION
+          //   {
+          //   monitor(m) {
+          //     m.addEventListener("downloadprogress", (e) => {
+          //       const progressEvent = e as DownloadProgressEvent;
+          //       console.log(
+          //         `Downloaded ${progressEvent.loaded} of ${progressEvent.total} bytes.`,
+          //       );
+          //     });
+          //   },
+          // }
+          ();
         await detector.ready;
       }
 
@@ -70,9 +80,14 @@ export function useLanguageDetection() {
       setDetectedLanguage(language);
       setLoading(false);
       return language;
-    } catch (err: any) {
-      console.error("Language detection error:", err);
-      setError(err.message || "An error occurred during language detection.");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error("Language detection error:", err);
+        setError(err.message || "An error occurred during language detection.");
+      } else {
+        console.error("Language detection error:", err);
+        setError("An unknown error occurred during language detection.");
+      }
       setLoading(false);
     }
   }

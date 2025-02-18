@@ -8,6 +8,7 @@ import React, {
   Dispatch,
 } from "react";
 
+// DEFINE CHAT MESSEGAE INTERFACE
 export interface ChatMessage {
   id: string;
   text: string;

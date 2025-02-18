@@ -29,6 +29,7 @@ import { useChat, ChatMessage } from "@/provider/chat";
 import { useLanguageDetection } from "@/hooks/use-language-detection";
 import { useTranslation } from "@/hooks/use-translation";
 import { toast } from "@/hooks/use-toast";
+import { languages } from "@/constants/lang";
 import { cn } from "@/lib/utils";
 
 const FormSchema = z.object({
@@ -196,6 +197,7 @@ function ChatBox() {
                 />
               </FormControl>
 
+              {/* ANIMATE ERROR MESSAGE */}
               <AnimatePresence mode="wait">
                 {form.formState.isSubmitted && fieldState.error && (
                   <motion.div
@@ -246,12 +248,11 @@ function ChatBox() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent side="top">
-                    <SelectItem value="en">English (en)</SelectItem>
-                    <SelectItem value="fr">French (fr)</SelectItem>
-                    <SelectItem value="es">Spanish (es)</SelectItem>
-                    <SelectItem value="pt">Portuguese (pt)</SelectItem>
-                    <SelectItem value="ru">Russian (ru)</SelectItem>
-                    <SelectItem value="tr">Turkish (tr)</SelectItem>
+                    {languages.map((language) => (
+                      <SelectItem key={language.value} value={language.value}>
+                        {language.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
