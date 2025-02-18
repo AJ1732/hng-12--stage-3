@@ -66,7 +66,10 @@ function ChatBox() {
 
   const {
     watch,
-    formState: { errors, isDirty },
+    formState: {
+      // errors,
+      isDirty,
+    },
   } = form;
   const chatValue = watch("chat");
   const tooLong = chatValue.length > 150;
