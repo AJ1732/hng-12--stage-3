@@ -33,7 +33,6 @@ import { useLanguageDetection } from "@/hooks/use-language-detection";
 import { type FormData, FormSchema } from "@/schema/chatbox";
 import { languages } from "@/constants/lang";
 import { cn } from "@/lib/utils";
-// import { toast } from "@/hooks/use-toast";
 
 function ChatBox() {
   // To hold the desired action ("translate" or "summarize")
@@ -58,38 +57,6 @@ function ChatBox() {
   const chatValue = watch("chat");
   const tooLong = chatValue.length > 150;
 
-  // Watch chat value and detect language
-  // useEffect(() => {
-  //   const detectChatLanguage = async () => {
-  //     if (chatValue.trim().length > 0) {
-  //       try {
-  //         const detected = await detectLanguage(chatValue);
-  //         setDetectedLanguage(detected || "");
-  //       } catch (error) {
-  //         const errorMessage =
-  //           error instanceof Error
-  //             ? error.message
-  //             : "An unexpected error occurred";
-
-  //         toast({
-  //           title: "Language detection failed",
-  //           description: errorMessage,
-  //           variant: "destructive",
-  //         });
-  //         setDetectedLanguage("");
-  //       }
-  //     } else {
-  //       setDetectedLanguage("");
-  //     }
-  //   };
-
-  //   // Debounce the detection to avoid too many API calls
-  //   const timer = setTimeout(() => {
-  //     detectChatLanguage();
-  //   }, 500);
-
-  //   return () => clearTimeout(timer);
-  // }, [chatValue, detectLanguage]);
   useEffect(() => {
     const detectChatLanguage = async () => {
       if (chatValue.trim().length > 0) {
@@ -127,7 +94,7 @@ function ChatBox() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full rounded-3xl border border-t-0 border-border bg-white shadow-custom"
+        className="w-full rounded-3xl border border-t-0 border-border bg-white shadow-custom dark:bg-zinc-900"
       >
         {/* Chat Box */}
         <FormField
@@ -162,7 +129,7 @@ function ChatBox() {
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <FormMessage className="px-6 pt-3" />
+                    <FormMessage className="px-6 pt-3 dark:text-red-400" />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -182,14 +149,16 @@ function ChatBox() {
               }}
               className={cn(
                 "w-full bg-gradient-to-r from-purple-500 via-primary-100 to-primary-300 font-bold transition-all duration-300 md:w-fit",
-                tooLong ? "animate-gradient" : "bg-clip-text text-transparent",
+                tooLong
+                  ? "animate-gradient"
+                  : "bg-clip-text text-transparent dark:text-transparent",
               )}
             >
               Summarize ✨
             </Button>
 
             {notEnglish && tooLong && (
-              <FormMessage className="h-fit px-2 pt-3 max-md:col-span-2 max-md:text-center">
+              <FormMessage className="h-fit px-2 pt-3 dark:text-red-400 max-md:col-span-2 max-md:text-center">
                 To Summarize, text must be in English
               </FormMessage>
             )}

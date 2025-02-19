@@ -12,7 +12,7 @@ const Textarea = React.forwardRef<
       <Paperclip className="absolute left-4 top-4 size-6 text-icon-fade" />
       <textarea
         className={cn(
-          "flex min-h-[9rem] w-full rounded-3xl border border-border bg-white p-4 pl-12 text-base shadow-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-100 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          "flex min-h-[9rem] w-full rounded-3xl border border-border bg-white dark:bg-zinc-900 p-4 pl-12 text-base shadow-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-100 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
           className,
         )}
         ref={ref}

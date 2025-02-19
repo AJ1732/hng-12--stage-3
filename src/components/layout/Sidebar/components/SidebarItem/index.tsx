@@ -28,8 +28,9 @@ const SidebarItem = ({ icon, label }: SidebarItemProps) => {
     >
       <span
         className={cn(
-          "flex aspect-square min-w-8 items-center justify-center rounded-md bg-zinc-100",
-          isFocused && "text-primary-300 ring-2 ring-primary-300",
+          "flex aspect-square min-w-8 items-center justify-center rounded-md bg-zinc-100 dark:bg-zinc-800/50",
+          isFocused &&
+            "text-primary-300 ring-2 ring-primary-300 dark:text-primary-100 dark:ring-primary-100",
         )}
         aria-hidden="true"
       >
@@ -51,7 +52,8 @@ const SidebarItem = ({ icon, label }: SidebarItemProps) => {
             }}
             className={cn(
               "overflow-hidden whitespace-nowrap",
-              isFocused && "font-semibold text-primary-300",
+              isFocused &&
+                "font-semibold text-primary-300 dark:text-primary-100",
             )}
             aria-hidden={!isOpen}
           >

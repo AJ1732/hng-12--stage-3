@@ -55,7 +55,7 @@ const Sidebar = () => {
   return (
     <motion.aside
       className={cn(
-        "z-40 h-svh min-w-20 space-y-8 border-r bg-white p-4 max-md:absolute md:z-50 md:space-y-4",
+        "z-40 h-svh min-w-20 space-y-8 border-r bg-white p-4 dark:bg-background max-md:absolute md:z-50 md:space-y-4",
         !isOpen && isMobile && "pointer-events-none",
       )}
       initial="closed"
@@ -74,7 +74,7 @@ const Sidebar = () => {
           aria-label={isOpen ? "Close sidebar" : "Open sidebar"}
           aria-expanded={isOpen}
         >
-          G
+          T
         </Button>
       </header>
 

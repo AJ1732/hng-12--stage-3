@@ -3,9 +3,12 @@
 import { useEffect, useRef } from "react";
 import { ChatLoading, TextBubble } from "@/components/custom";
 import { useChat } from "@/provider/chat";
+import { useTheme } from "@/provider/theme";
+import { cn } from "@/lib/utils";
 
 const ChatHistory = () => {
   const { state } = useChat();
+  const { theme } = useTheme();
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   // Scroll to the lastest message
@@ -16,7 +19,12 @@ const ChatHistory = () => {
   }, [state.messages]);
 
   return (
-    <section className="full-width chats content-grid max-h-[calc(100svh-22rem)] overflow-y-auto">
+    <section
+      className={cn(
+        "full-width content-grid max-h-[calc(100svh-22rem)] overflow-y-auto",
+        theme == "light" ? "chats" : "chat-dark",
+      )}
+    >
       <div className="space-y-8 p-4 md:p-8">
         {state.messages.map((msg) => (
           <TextBubble

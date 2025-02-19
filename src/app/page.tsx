@@ -5,7 +5,7 @@ import { ChatProvider } from "@/provider/chat";
 
 export default function Home() {
   return (
-    <div className="content-grid min-h-[calc(100svh-5rem)] content-end pb-4">
+    <div className="content-grid min-h-[calc(100svh-5rem)] w-full content-end pb-4">
       <ChatProvider>
         <ChatHistory />
         <ChatBox />
