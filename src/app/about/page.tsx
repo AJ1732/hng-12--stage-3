@@ -6,7 +6,7 @@ const AboutPage = () => {
   return (
     <div
       className={cn(
-        "mx-auto max-w-3xl space-y-8 p-8 [&_p]:leading-[175%] [&_p]:text-gray-600 [&_p]:dark:text-gray-400",
+        "mx-auto max-w-3xl space-y-8 px-6 pb-8 pt-12 [&_p]:leading-[175%] [&_p]:text-gray-600 [&_p]:dark:text-gray-400",
       )}
     >
       {/* Project Overview */}
@@ -34,11 +34,14 @@ const AboutPage = () => {
           <li>
             <strong>Sending a Message:</strong> Type your text in the input
             field and click the either of the action buttons ("
-            <strong className="whitespace-nowrap text-primary-300">
+            <strong className="whitespace-nowrap text-primary-300 dark:text-primary-100">
               Summarize ✨
             </strong>
-            " or "<strong className="text-primary-300">Translate</strong>") or
-            press Enter, to post your message in the chat.
+            " or "
+            <strong className="text-primary-300 dark:text-primary-100">
+              Translate
+            </strong>
+            ") or press Enter, to post your message in the chat.
           </li>
           <li>
             <strong>Language Detection:</strong> The app automatically detects
@@ -48,7 +51,7 @@ const AboutPage = () => {
           <li>
             <strong>Summarization:</strong> If your message is in English and
             contains more than 150 characters, a "
-            <strong className="whitespace-nowrap text-primary-300">
+            <strong className="whitespace-nowrap text-primary-300 dark:text-primary-100">
               Summarize ✨
             </strong>
             " button will appear. Click this button to generate a summary using
@@ -61,8 +64,10 @@ const AboutPage = () => {
               (English, French, Spanish, Portuguese, Russian, or Turkish)
             </strong>
             , then click the "
-            <strong className="text-primary-300">Translate</strong>" button to
-            convert the output text.
+            <strong className="text-primary-300 dark:text-primary-100">
+              Translate
+            </strong>
+            " button to convert the output text.
           </li>
         </ul>
       </section>
