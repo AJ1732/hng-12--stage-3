@@ -16,9 +16,9 @@ const AboutPage = () => {
         </h1>
         <p>
           Welcome to the AI Text Processing Interface! This application allows
-          you to process text using Chrome's native AI APIs. You can detect the
-          language of your text, translate it into various languages, or get an
-          AI-generated summary of your content.
+          you to process text using Chrome&apos;s native AI APIs. You can detect
+          the language of your text, translate it into various languages, or get
+          an AI-generated summary of your content.
         </p>
       </section>
 
@@ -33,11 +33,11 @@ const AboutPage = () => {
         <ul className="ml-6 list-disc space-y-2 leading-[175%] text-gray-800 dark:text-gray-300">
           <li>
             <strong>Sending a Message:</strong> Type your text in the input
-            field and click the either of the action buttons ("
+            field and click the either of the action buttons (&quot;
             <strong className="whitespace-nowrap text-primary-300 dark:text-primary-100">
               Summarize ✨
             </strong>
-            " or "
+            &quot; or &quot;
             <strong className="text-primary-300 dark:text-primary-100">
               Translate
             </strong>
@@ -50,12 +50,12 @@ const AboutPage = () => {
           </li>
           <li>
             <strong>Summarization:</strong> If your message is in English and
-            contains more than 150 characters, a "
+            contains more than 150 characters, a &quot;
             <strong className="whitespace-nowrap text-primary-300 dark:text-primary-100">
               Summarize ✨
             </strong>
-            " button will appear. Click this button to generate a summary using
-            the AI Summarizer API.
+            &quot; button will appear. Click this button to generate a summary
+            using the AI Summarizer API.
           </li>
           <li>
             <strong>Translation:</strong> Use the language selector to choose a
@@ -63,11 +63,11 @@ const AboutPage = () => {
             <strong>
               (English, French, Spanish, Portuguese, Russian, or Turkish)
             </strong>
-            , then click the "
+            , then click the &quot;
             <strong className="text-primary-300 dark:text-primary-100">
               Translate
             </strong>
-            " button to convert the output text.
+            &quot; button to convert the output text.
           </li>
         </ul>
       </section>
