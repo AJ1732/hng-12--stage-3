@@ -188,7 +188,7 @@ function ChatBox() {
               Summarize ✨
             </Button>
 
-            {notEnglish && isDirty && (
+            {notEnglish && tooLong && (
               <FormMessage className="h-fit px-2 pt-3 max-md:col-span-2 max-md:text-center">
                 To Summarize, text must be in English
               </FormMessage>
