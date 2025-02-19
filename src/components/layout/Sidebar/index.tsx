@@ -74,7 +74,7 @@ const Sidebar = () => {
           aria-label={isOpen ? "Close sidebar" : "Open sidebar"}
           aria-expanded={isOpen}
         >
-          T
+          G
         </Button>
       </header>
 

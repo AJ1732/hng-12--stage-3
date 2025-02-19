@@ -49,7 +49,7 @@ function ChatBox() {
 
   const {
     watch,
-    formState: { isDirty, isSubmitting },
+    formState: { isSubmitting },
   } = form;
 
   const [detectedLanguage, setDetectedLanguage] = useState<string>("");
