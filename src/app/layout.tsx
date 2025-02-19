@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     url: "https://1732-hng-12-stage-3.netlify.app/",
     images: [
       {
-        url: "/favicon_io/android-chrome-192x192.png",
+        url: "https://res.cloudinary.com/dszm6ufc6/image/upload/v1739978163/cgegwalgt1o2yunh9zzu.png",
         width: 1200,
         height: 630,
         alt: "GPT - AI Text processor",
