@@ -41,7 +41,7 @@ const AboutPage = () => {
             <strong className="text-primary-300 dark:text-primary-100">
               Translate
             </strong>
-            ") or press Enter, to post your message in the chat.
+            &quot;) or press Enter, to post your message in the chat.
           </li>
           <li>
             <strong>Language Detection:</strong> The app automatically detects
