@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "@/hooks/use-toast";
 
 /**
  * Custom hook for summarizing text using the AI Summarizer API.
@@ -77,13 +78,20 @@ export function useSummarizer() {
       setLoading(false);
       return result;
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        console.error("Summarizer error:", err);
-        setError(err.message || "An error occurred during summarization.");
-      } else {
-        console.error("Summarizer error:", err);
-        setError("An unknown error occurred during summarization.");
-      }
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "An unknown error occurred during summarization";
+
+      setError(errorMessage);
+      console.error("Summarizer error:", err);
+
+      toast({
+        title: "Summarization Failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+
       setLoading(false);
     }
   }

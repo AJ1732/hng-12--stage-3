@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "@/hooks/use-toast";
 
 /**
  * Custom hook for detecting the language of a given text.
@@ -81,13 +82,19 @@ export function useLanguageDetection() {
       setLoading(false);
       return language;
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        console.error("Language detection error:", err);
-        setError(err.message || "An error occurred during language detection.");
-      } else {
-        console.error("Language detection error:", err);
-        setError("An unknown error occurred during language detection.");
-      }
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "An unknown error occurred during language detection";
+
+      setError(errorMessage);
+      console.error("Language detection error:", err);
+
+      toast({
+        title: "Language Detection Failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
       setLoading(false);
     }
   }

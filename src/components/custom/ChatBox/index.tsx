@@ -59,23 +59,44 @@ function ChatBox() {
   const tooLong = chatValue.length > 150;
 
   // Watch chat value and detect language
+  // useEffect(() => {
+  //   const detectChatLanguage = async () => {
+  //     if (chatValue.trim().length > 0) {
+  //       try {
+  //         const detected = await detectLanguage(chatValue);
+  //         setDetectedLanguage(detected || "");
+  //       } catch (error) {
+  //         const errorMessage =
+  //           error instanceof Error
+  //             ? error.message
+  //             : "An unexpected error occurred";
+
+  //         toast({
+  //           title: "Language detection failed",
+  //           description: errorMessage,
+  //           variant: "destructive",
+  //         });
+  //         setDetectedLanguage("");
+  //       }
+  //     } else {
+  //       setDetectedLanguage("");
+  //     }
+  //   };
+
+  //   // Debounce the detection to avoid too many API calls
+  //   const timer = setTimeout(() => {
+  //     detectChatLanguage();
+  //   }, 500);
+
+  //   return () => clearTimeout(timer);
+  // }, [chatValue, detectLanguage]);
   useEffect(() => {
     const detectChatLanguage = async () => {
       if (chatValue.trim().length > 0) {
         try {
           const detected = await detectLanguage(chatValue);
           setDetectedLanguage(detected || "");
-        } catch (error) {
-          const errorMessage =
-            error instanceof Error
-              ? error.message
-              : "An unexpected error occurred";
-
-          toast({
-            title: "Language detection failed",
-            description: errorMessage,
-            variant: "destructive",
-          });
+        } catch {
           setDetectedLanguage("");
         }
       } else {
@@ -83,11 +104,7 @@ function ChatBox() {
       }
     };
 
-    // Debounce the detection to avoid too many API calls
-    const timer = setTimeout(() => {
-      detectChatLanguage();
-    }, 500);
-
+    const timer = setTimeout(detectChatLanguage, 500);
     return () => clearTimeout(timer);
   }, [chatValue, detectLanguage]);
 

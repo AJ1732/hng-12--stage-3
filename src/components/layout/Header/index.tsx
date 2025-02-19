@@ -22,7 +22,7 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed z-50 flex w-full items-center gap-6 border-b bg-background px-4 py-3.5 transition-all duration-500 ease-in-out md:z-40 md:py-5">
+    <header className="fixed z-50 flex w-full items-center gap-4 border-b bg-background px-4 py-3.5 transition-all duration-500 ease-in-out md:z-40 md:py-5">
       <Button
         ref={buttonRef}
         size={"icon"}
